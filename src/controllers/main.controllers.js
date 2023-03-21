@@ -14,9 +14,10 @@ const removeTempFile = (filename) => {
 
 const httpMailer = async ({ body: { text, to, subject }, file }, res) => {
   try {
+    const filePath = path.join(__dirname, '../', 'assets', file.filename);
     const attachments = file && [{
       filename: file.filename,
-      path: path.join(__dirname, '../', 'assets', file.filename),
+      path: filePath,
       cid: `${file.filename}-${to}`
     }];
     const html = `
@@ -48,7 +49,7 @@ const httpMailer = async ({ body: { text, to, subject }, file }, res) => {
     const acceptedEmails = info.accepted.join(' ,');
 
     if (attachments) {
-      removeTempFile(path.join(__dirname, '../', 'assets', file.filename));
+      removeTempFile(filePath);
     }
 
     return res.status(200).json({ message: `Messages to emails ${acceptedEmails} were sent successful` })
